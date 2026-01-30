@@ -1,10 +1,9 @@
-"use client";
-
 import React from "react";
-import Sidebar from "../components/Sidebar"; // adjust path if needed
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import Head from "next/head";
+import StudentPortalBanner from "@/components/StudentPortalBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,13 +22,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Head>
+        <title>My Next.js App</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="/app_icon.png" />
+      </Head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
-        
-        <div className=" min-h-screen">
-          {children}
-        </div>
+        <StudentPortalBanner />
+
+        {/* Page Content */}
+        <div>{children}</div>
+
         <Toaster position="top-right" />
       </body>
     </html>

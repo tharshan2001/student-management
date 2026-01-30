@@ -61,8 +61,12 @@ const StudentList: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Students Information</h2>
-          <p className="text-slate-500 text-sm">Manage your student directory</p>
+          <h2 className="text-2xl font-bold text-slate-900">
+            Students Information
+          </h2>
+          <p className="text-slate-500 text-sm">
+            Manage your student directory
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
@@ -82,7 +86,6 @@ const StudentList: React.FC = () => {
             />
           </div>
 
-
           <button
             onClick={() => setOpenCreate(true)}
             className="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold rounded-2xl text-sm shadow-md shadow-yellow-200/50 transition-all active:scale-95"
@@ -95,19 +98,34 @@ const StudentList: React.FC = () => {
       {/* Table Container */}
       <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <div className="max-h-[600px] overflow-y-auto">
+          <div className="max-h-[550px] overflow-y-auto">
             <table className="w-full table-auto border-collapse">
               <thead>
-                <tr className="text-[11px] text-slate-400 uppercase tracking-wider">
-                  <th className="text-left py-5 px-6 font-semibold">Student</th>
-                  <th className="text-left py-5 px-6 font-semibold">Roll</th>
-                  <th className="text-left py-5 px-6 font-semibold">Address</th>
-                  <th className="text-left py-5 px-6 font-semibold">Age</th>
-                  <th className="text-left py-5 px-6 font-semibold">DOB</th>
-                  <th className="text-left py-5 px-6 font-semibold">Phone</th>
-                  <th className="text-right py-5 px-6 font-semibold">Action</th>
+                <tr className="text-[11px] uppercase tracking-wider bg-slate-100">
+                  <th className="sticky top-0 z-10 bg-slate-100 text-left py-5 px-6 font-semibold">
+                    Student
+                  </th>
+                  <th className="sticky top-0 z-10 bg-slate-100 text-left py-5 px-6 font-semibold">
+                    Roll
+                  </th>
+                  <th className="sticky top-0 z-10 bg-slate-100 text-left py-5 px-6 font-semibold">
+                    Address
+                  </th>
+                  <th className="sticky top-0 z-10 bg-slate-100 text-left py-5 px-6 font-semibold">
+                    Age
+                  </th>
+                  <th className="sticky top-0 z-10 bg-slate-100 text-left py-5 px-6 font-semibold">
+                    DOB
+                  </th>
+                  <th className="sticky top-0 z-10 bg-slate-100 text-left py-5 px-6 font-semibold">
+                    Phone
+                  </th>
+                  <th className="sticky top-0 z-10 bg-slate-100 text-right py-5 px-6 font-semibold">
+                    Action
+                  </th>
                 </tr>
               </thead>
+
               <tbody className="divide-y divide-slate-50">
                 {loading ? (
                   <tr>
@@ -117,7 +135,10 @@ const StudentList: React.FC = () => {
                   </tr>
                 ) : students.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-20 text-slate-400 font-medium">
+                    <td
+                      colSpan={7}
+                      className="text-center py-20 text-slate-400 font-medium"
+                    >
                       No students found.
                     </td>
                   </tr>
@@ -140,7 +161,7 @@ const StudentList: React.FC = () => {
           <span className="text-xs text-slate-500 font-medium">
             Page {page} of {totalPages}
           </span>
-          
+
           <div className="flex items-center gap-1">
             <button
               className="p-2 rounded-xl hover:bg-white transition-colors disabled:opacity-30"
