@@ -11,21 +11,19 @@ const StudentList: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-
   const [openCreate, setOpenCreate] = useState(false);
+  const limit = 10;
 
-  const fetchStudents = async () => {
+  const fetchStudents = async (pageNumber: number = page) => {
     setLoading(true);
     try {
       const query = new URLSearchParams({
         search,
-        page: page.toString(),
+        page: pageNumber.toString(),
         limit: limit.toString(),
       });
-
       const res = await fetch(`/api/students?${query}`);
       const data = await res.json();
 
@@ -36,6 +34,7 @@ const StudentList: React.FC = () => {
 
       setStudents(formatted);
       setTotalPages(data.totalPages || 1);
+      setPage(pageNumber);
     } catch (err) {
       console.error("Failed to fetch students", err);
       setStudents([]);
@@ -45,26 +44,36 @@ const StudentList: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchStudents();
-  }, [search, page, limit]);
+    fetchStudents(1);
+  }, [search]);
+
+  useEffect(() => {
+    fetchStudents(page);
+  }, [page]);
+
+  const handleStudentCreated = () => {
+    fetchStudents(1);
+    setOpenCreate(false);
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6 border">
+    <div className="bg-slate-50/50 rounded-3xl p-8 shadow-sm">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
-        <h2 className="text-xl font-bold text-slate-800">
-          Students Information
-        </h2>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900">Students Information</h2>
+          <p className="text-slate-500 text-sm">Manage your student directory</p>
+        </div>
 
-        <div className="flex gap-3 w-full md:w-auto">
-          <div className="relative flex-1">
+        <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          <div className="relative flex-1 md:min-w-[300px]">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
               size={18}
             />
             <input
-              className="pl-10 pr-4 py-2 w-full border rounded-lg text-sm"
-              placeholder="Search by name or city"
+              className="pl-12 pr-4 py-3 w-full bg-white border-none rounded-2xl text-sm focus:ring-2 focus:ring-yellow-400 transition-all shadow-sm"
+              placeholder="Search students..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -73,109 +82,106 @@ const StudentList: React.FC = () => {
             />
           </div>
 
-          <button className="flex items-center gap-2 px-4 py-2 border rounded-lg text-sm">
-            <Calendar size={18} />
-            Last 30 days
-          </button>
 
-          {/* Add Student Button */}
           <button
             onClick={() => setOpenCreate(true)}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm"
+            className="px-6 py-3 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold rounded-2xl text-sm shadow-md shadow-yellow-200/50 transition-all active:scale-95"
           >
             + Add Student
           </button>
         </div>
       </div>
 
-      {/* Table */}
-      {loading ? (
-        <p className="text-center py-10 text-gray-400">Loading students...</p>
-      ) : (
-        <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+      {/* Table Container */}
+      <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <div className="max-h-[600px] overflow-y-auto">
+            <table className="w-full table-auto border-collapse">
               <thead>
-                <tr className="text-xs text-slate-400 uppercase border-b">
-                  <th className="py-4 px-4">Student</th>
-                  <th className="py-4 px-4">Roll</th>
-                  <th className="py-4 px-4">Address</th>
-                  <th className="py-4 px-4">Age</th>
-                  <th className="py-4 px-4">DOB</th>
-                  <th className="py-4 px-4">Phone</th>
-                  <th className="py-4 px-4 text-right">Action</th>
+                <tr className="text-[11px] text-slate-400 uppercase tracking-wider">
+                  <th className="text-left py-5 px-6 font-semibold">Student</th>
+                  <th className="text-left py-5 px-6 font-semibold">Roll</th>
+                  <th className="text-left py-5 px-6 font-semibold">Address</th>
+                  <th className="text-left py-5 px-6 font-semibold">Age</th>
+                  <th className="text-left py-5 px-6 font-semibold">DOB</th>
+                  <th className="text-left py-5 px-6 font-semibold">Phone</th>
+                  <th className="text-right py-5 px-6 font-semibold">Action</th>
                 </tr>
               </thead>
-
               <tbody className="divide-y divide-slate-50">
-                {students.map((student) => (
-                  <StudentItem
-                    key={student._id}
-                    student={student}
-                    onRefresh={fetchStudents}
-                  />
-                ))}
+                {loading ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-20">
+                      <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-yellow-400 border-r-transparent align-[-0.125em]" />
+                    </td>
+                  </tr>
+                ) : students.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-20 text-slate-400 font-medium">
+                      No students found.
+                    </td>
+                  </tr>
+                ) : (
+                  students.map((student) => (
+                    <StudentItem
+                      key={student._id}
+                      student={student}
+                      onRefresh={() => fetchStudents(page)}
+                    />
+                  ))
+                )}
               </tbody>
             </table>
           </div>
+        </div>
 
-          {/* Pagination */}
-          <div className="flex flex-col md:flex-row justify-between items-center mt-8 gap-4">
-            <div className="flex items-center gap-1">
-              <button
-                className="p-2"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
-                <ChevronLeft />
-              </button>
+        {/* Pagination */}
+        <div className="flex justify-between items-center px-8 py-5 bg-slate-50/30 border-t border-slate-50">
+          <span className="text-xs text-slate-500 font-medium">
+            Page {page} of {totalPages}
+          </span>
+          
+          <div className="flex items-center gap-1">
+            <button
+              className="p-2 rounded-xl hover:bg-white transition-colors disabled:opacity-30"
+              onClick={() => setPage(Math.max(1, page - 1))}
+              disabled={page === 1}
+            >
+              <ChevronLeft size={20} className="text-slate-600" />
+            </button>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (p) => (
-                  <button
-                    key={p}
-                    onClick={() => setPage(p)}
-                    className={`w-8 h-8 rounded ${
-                      p === page
-                        ? "bg-purple-600 text-white"
-                        : "hover:bg-gray-100"
-                    }`}
-                  >
-                    {p}
-                  </button>
-                )
-              )}
-
-              <button
-                className="p-2"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-              >
-                <ChevronRight />
-              </button>
+            <div className="flex gap-1 mx-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${
+                    p === page
+                      ? "bg-yellow-400 text-slate-900 shadow-sm"
+                      : "text-slate-500 hover:bg-white"
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
             </div>
 
-            <select
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value));
-                setPage(1);
-              }}
-              className="border rounded px-3 py-1 text-sm"
+            <button
+              className="p-2 rounded-xl hover:bg-white transition-colors disabled:opacity-30"
+              onClick={() => setPage(Math.min(totalPages, page + 1))}
+              disabled={page === totalPages}
             >
-              <option value={5}>5 / page</option>
-              <option value={10}>10 / page</option>
-              <option value={20}>20 / page</option>
-            </select>
+              <ChevronRight size={20} className="text-slate-600" />
+            </button>
           </div>
-        </>
-      )}
+        </div>
+      </div>
 
-      {/* Create Student Modal */}
+      {/* Modal */}
       {openCreate && (
         <CreateStudentModal
           onClose={() => setOpenCreate(false)}
-          onCreated={fetchStudents}
+          onCreated={handleStudentCreated}
         />
       )}
     </div>
