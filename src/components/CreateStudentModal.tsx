@@ -92,7 +92,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
 
       if (!res.ok) throw new Error("Server error");
 
-      toast.success(`🎉 Student "${form.firstName} ${form.lastName}" created successfully!`);
+      toast.success(`Student "${form.firstName} ${form.lastName}" created successfully!`);
       onCreated();
       onClose();
     } catch (error) {
@@ -112,19 +112,23 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
   const renderError = (field: string) =>
     errors[field] ? <p className="text-xs text-red-500 mt-1">{errors[field]}</p> : null;
 
+  // Reusable input class with black text
+  const inputClass =
+    "w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none text-black";
+
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 md:p-4">
       <div
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg md:max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-100">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-slate-100">
           <div>
-            <h2 className="text-xl font-bold text-slate-800">Create Student</h2>
-            <p className="text-sm text-slate-500">Add a new student</p>
+            <h2 className="text-lg md:text-xl font-bold text-slate-800">Create Student</h2>
+            <p className="text-xs md:text-sm text-slate-500">Add a new student</p>
           </div>
           <button
             onClick={onClose}
@@ -135,14 +139,14 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
         </div>
 
         {/* Form */}
-        <div className="p-6 max-h-[70vh] overflow-y-auto bg-slate-50/30">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="p-4 md:p-6 max-h-[70vh] overflow-y-auto bg-slate-50/30">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
             {/* Personal Details */}
             <div className="space-y-4 md:col-span-2">
               <h3 className="text-sm font-bold text-purple-600 flex items-center gap-2">
                 <User size={16} /> Personal Details
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                 <div>
                   <Label>First Name</Label>
                   <input
@@ -150,7 +154,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                     autoComplete="off"
                     value={form.firstName}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                    className={inputClass}
                   />
                   {renderError("firstName")}
                 </div>
@@ -161,7 +165,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                     autoComplete="off"
                     value={form.middleName}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                    className={inputClass}
                   />
                   {renderError("middleName")}
                 </div>
@@ -172,7 +176,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                     autoComplete="off"
                     value={form.lastName}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                    className={inputClass}
                   />
                   {renderError("lastName")}
                 </div>
@@ -188,7 +192,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                 autoComplete="off"
                 value={form.birthDate}
                 onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                className={inputClass}
               />
               {renderError("birthDate")}
             </div>
@@ -201,7 +205,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                 autoComplete="off"
                 value={form.contactNumber}
                 onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                className={inputClass}
               />
               {renderError("contactNumber")}
             </div>
@@ -214,7 +218,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                 autoComplete="off"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                className={inputClass}
               />
               {renderError("email")}
             </div>
@@ -224,7 +228,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
               <h3 className="text-sm font-bold text-purple-600 flex items-center gap-2">
                 <MapPin size={16} /> Location Details
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <Label>Line 1</Label>
                   <input
@@ -232,7 +236,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                     autoComplete="off"
                     value={form.address.line1}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                    className={inputClass}
                   />
                   {renderError("address.line1")}
                 </div>
@@ -243,7 +247,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                     autoComplete="off"
                     value={form.address.line2}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                    className={inputClass}
                   />
                   {renderError("address.line2")}
                 </div>
@@ -254,7 +258,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                     autoComplete="off"
                     value={form.address.city}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                    className={inputClass}
                   />
                   {renderError("address.city")}
                 </div>
@@ -265,7 +269,7 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
                     autoComplete="off"
                     value={form.address.district}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"
+                    className={inputClass}
                   />
                   {renderError("address.district")}
                 </div>
@@ -275,17 +279,17 @@ const CreateStudentModal: React.FC<Props> = ({ onClose, onCreated }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-slate-100 flex justify-end gap-3 bg-white">
+        <div className="p-4 md:p-6 border-t border-slate-100 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 bg-white">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors"
+            className="w-full sm:w-auto px-4 py-2 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors text-sm md:text-base"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-8 py-2.5 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 shadow-lg shadow-purple-200 disabled:opacity-50 transition-all"
+            className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 shadow-md shadow-purple-200 disabled:opacity-50 transition-all text-sm md:text-base"
           >
             {isSubmitting ? "Creating..." : "Create Student"}
           </button>

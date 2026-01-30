@@ -74,26 +74,30 @@ const StudentProfile = () => {
         {/* Left Column: Identity Card */}
         <div className="md:col-span-1 space-y-6">
           <div className="bg-white rounded-[2.5rem] p-8 shadow-sm flex flex-col items-center text-center">
-            <div className="w-32 h-32 bg-slate-100 rounded-[2rem] flex items-center justify-center text-slate-600 text-4xl font-black mb-4 shadow-inner">
+            <div className="w-32 h-32 bg-yellow-100 rounded-[2rem] flex items-center justify-center text-yellow-600 text-4xl font-black mb-4 shadow-inner">
               {student.firstName[0]}{student.lastName[0]}
             </div>
             <h1 className="text-2xl font-black text-slate-900 leading-tight">
               {student.firstName} <br /> {student.lastName}
             </h1>
-            <span className="mt-2 px-4 py-1 bg-slate-100 text-slate-500 rounded-full text-xs font-bold tracking-widest uppercase">
+            <span className="mt-2 px-4 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold tracking-widest uppercase">
               ID: {student.studentCode}
             </span>
             
             <div className="w-full h-px bg-slate-100 my-8" />
             
             <div className="w-full space-y-4">
-              <div className="flex items-center gap-4 text-slate-600">
-                <div className="p-2 bg-slate-50 rounded-lg"><Phone size={18} /></div>
-                <span className="text-sm font-medium">{student.contactNumber}</span>
+              <div className="flex items-center gap-4 text-yellow-600">
+                <div className="p-2 bg-yellow-50 rounded-lg"><Phone size={18} /></div>
+                <span className="text-sm font-medium text-slate-700">{student.contactNumber}</span>
               </div>
-              <div className="flex items-center gap-4 text-slate-600">
-                <div className="p-2 bg-slate-50 rounded-lg"><Clock size={18} /></div>
-                <span className="text-sm font-medium">{student.age} Years Old</span>
+              <div className="flex items-center gap-4 text-yellow-600">
+                <div className="p-2 bg-yellow-50 rounded-lg"><Mail size={18} /></div>
+                <span className="text-sm font-medium text-slate-700">{student.email}</span>
+              </div>
+              <div className="flex items-center gap-4 text-yellow-600">
+                <div className="p-2 bg-yellow-50 rounded-lg"><Clock size={18} /></div>
+                <span className="text-sm font-medium text-slate-700">{student.age} Years Old</span>
               </div>
             </div>
           </div>
@@ -102,7 +106,7 @@ const StudentProfile = () => {
         {/* Right Column: Detailed Info Grid */}
         <div className="md:col-span-2 space-y-6">
           {/* Header Info */}
-          <div className="bg-slate-400/10 rounded-[2.5rem] p-8 shadow-md shadow-yellow-200/50 flex justify-between items-center text-slate-900">
+          <div className="bg-yellow-50 rounded-[2.5rem] p-8 shadow-md shadow-yellow-200/50 flex justify-between items-center text-slate-900">
             <div>
               <p className="text-xs font-black uppercase tracking-widest opacity-70">Current Status</p>
               <h3 className="text-xl font-bold">Active Enrollment</h3>
@@ -117,14 +121,14 @@ const StudentProfile = () => {
             
             {/* Personal Details */}
             <div className="bg-white rounded-[2rem] p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-4 text-slate-600">
+              <div className="flex items-center gap-3 mb-4 text-yellow-600">
                 <User size={20} />
                 <h4 className="font-bold text-slate-800">Personal Data</h4>
               </div>
               <div className="space-y-4">
                 <div>
                   <label className="text-[10px] uppercase font-black text-slate-400 tracking-tighter">Full Name</label>
-                  <p className="text-sm font-semibold text-slate-700">{student.firstName} {student.lastName}</p>
+                  <p className="text-sm font-semibold text-slate-700">{student.firstName} {student.middleName} {student.lastName}</p>
                 </div>
                 <div>
                   <label className="text-[10px] uppercase font-black text-slate-400 tracking-tighter">Birth Date</label>

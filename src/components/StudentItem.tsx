@@ -2,9 +2,10 @@
 
 import React, { useState, useMemo } from "react";
 import { Trash2, Pencil } from "lucide-react";
-import { useRouter } from "next/navigation"; // Added for navigation
+import { useRouter } from "next/navigation";
 import { Student } from "../models/student";
 import UpdateStudentModal from "./UpdateStudentModal";
+import toast from "react-hot-toast"; // Added toast
 
 interface Props {
   student: Student;
@@ -33,23 +34,30 @@ const StudentItem: React.FC<Props> = ({ student, onRefresh }) => {
   }, [student.firstName, student.lastName]);
 
   const handleDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevents navigation when clicking delete
+    e.stopPropagation(); // Prevent row click
     if (!confirm("Are you sure you want to delete this student record?")) return;
 
-    await fetch(`/api/students/${student._id}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/students/${student._id}`, {
+        method: "DELETE",
+      });
 
-    onRefresh();
+      if (!res.ok) throw new Error("Failed to delete");
+
+      toast.success("Student deleted successfully!");
+      onRefresh();
+    } catch (error) {
+      console.error("Delete failed:", error);
+      toast.error("⚠️ Could not delete student. Please try again.");
+    }
   };
 
   const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevents navigation when clicking edit
+    e.stopPropagation();
     setOpenEdit(true);
   };
 
   const handleRowClick = () => {
-    // Navigates to the specific student profile
     router.push(`/students/${student._id}`);
   };
 

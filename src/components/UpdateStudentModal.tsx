@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, User, Phone, Mail, MapPin, Calendar } from "lucide-react";
 import { Student } from "../models/student";
+import toast from "react-hot-toast";
 
 interface Props {
   student: Student;
@@ -32,7 +33,7 @@ const UpdateStudentModal: React.FC<Props> = ({ student, onClose, onUpdated }) =>
 
   useEffect(() => {
     setMounted(true);
-    document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open [cite: 1]
+    document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = "unset"; };
   }, []);
 
@@ -54,15 +55,20 @@ const UpdateStudentModal: React.FC<Props> = ({ student, onClose, onUpdated }) =>
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      await fetch(`/api/students/${student._id}`, {
+      const res = await fetch(`/api/students/${student._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+
+      if (!res.ok) throw new Error("Server error");
+
+      toast.success("Student updated successfully!");
       onUpdated();
       onClose();
     } catch (error) {
       console.error("Failed to update student", error);
+      toast.error("⚠️ Failed to update student. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -74,8 +80,11 @@ const UpdateStudentModal: React.FC<Props> = ({ student, onClose, onUpdated }) =>
     </label>
   );
 
+  const inputClass =
+    "w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none text-black transition-all";
+
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 md:p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" 
@@ -83,12 +92,14 @@ const UpdateStudentModal: React.FC<Props> = ({ student, onClose, onUpdated }) =>
       />
 
       {/* Modal Content */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg md:max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-100">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-slate-100">
           <div>
-            <h2 className="text-xl font-bold text-slate-800">Update Student Profile</h2>
-            <p className="text-sm text-slate-500">Edit information for {student.firstName} {student.lastName}</p>
+            <h2 className="text-lg md:text-xl font-bold text-slate-800">Update Student Profile</h2>
+            <p className="text-xs md:text-sm text-slate-500">
+              Edit information for {student.firstName} {student.lastName}
+            </p>
           </div>
           <button 
             onClick={onClose}
@@ -99,65 +110,67 @@ const UpdateStudentModal: React.FC<Props> = ({ student, onClose, onUpdated }) =>
         </div>
 
         {/* Form Body */}
-        <div className="p-6 max-h-[70vh] overflow-y-auto bg-slate-50/30">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="p-4 md:p-6 max-h-[70vh] overflow-y-auto bg-slate-50/30">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
             
             {/* Personal Info Section */}
             <div className="space-y-4 md:col-span-2">
               <h3 className="text-sm font-bold text-purple-600 flex items-center gap-2">
                 <User size={16} /> Personal Details
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
                   <Label>First Name</Label>
-                  <input name="firstName" value={form.firstName} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all" />
+                  <input name="firstName" value={form.firstName} onChange={handleChange} className={inputClass} />
                 </div>
                 <div>
                   <Label>Middle Name</Label>
-                  <input name="middleName" value={form.middleName} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all" />
+                  <input name="middleName" value={form.middleName} onChange={handleChange} className={inputClass} />
                 </div>
                 <div>
                   <Label>Last Name</Label>
-                  <input name="lastName" value={form.lastName} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all" />
+                  <input name="lastName" value={form.lastName} onChange={handleChange} className={inputClass} />
                 </div>
               </div>
             </div>
 
-            {/* Contact & DOB Section */}
+            {/* DOB */}
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-purple-600 flex items-center gap-2">
                 <Calendar size={16} /> Date of Birth
               </h3>
-              <input type="date" name="birthDate" value={form.birthDate} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input type="date" name="birthDate" value={form.birthDate} onChange={handleChange} className={inputClass} />
             </div>
 
+            {/* Contact */}
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-purple-600 flex items-center gap-2">
                 <Phone size={16} /> Contact Number
               </h3>
-              <input name="contactNumber" value={form.contactNumber} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input name="contactNumber" value={form.contactNumber} onChange={handleChange} className={inputClass} />
             </div>
 
+            {/* Email */}
             <div className="space-y-4 md:col-span-2">
               <h3 className="text-sm font-bold text-purple-600 flex items-center gap-2">
                 <Mail size={16} /> Email Address
               </h3>
-              <input name="email" value={form.email} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none" />
+              <input name="email" value={form.email} onChange={handleChange} className={inputClass} />
             </div>
 
-            {/* Address Section */}
+            {/* Address */}
             <div className="space-y-4 md:col-span-2 pt-2">
               <h3 className="text-sm font-bold text-purple-600 flex items-center gap-2">
                 <MapPin size={16} /> Location Details
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <Label>City</Label>
-                  <input name="address.city" value={form.address.city} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none" />
+                  <input name="address.city" value={form.address.city} onChange={handleChange} className={inputClass} />
                 </div>
                 <div>
                   <Label>District</Label>
-                  <input name="address.district" value={form.address.district} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none" />
+                  <input name="address.district" value={form.address.district} onChange={handleChange} className={inputClass} />
                 </div>
               </div>
             </div>
@@ -165,18 +178,18 @@ const UpdateStudentModal: React.FC<Props> = ({ student, onClose, onUpdated }) =>
           </div>
         </div>
 
-        {/* Footer Actions */}
-        <div className="p-6 border-t border-slate-100 flex justify-end gap-3 bg-white">
+        {/* Footer */}
+        <div className="p-4 md:p-6 border-t border-slate-100 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 bg-white">
           <button 
             onClick={onClose} 
-            className="px-6 py-2.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors"
+            className="w-full sm:w-auto px-4 py-2 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors text-sm md:text-base"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-8 py-2.5 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 shadow-lg shadow-purple-200 disabled:opacity-50 transition-all"
+            className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 shadow-md shadow-purple-200 disabled:opacity-50 transition-all text-sm md:text-base"
           >
             {isSubmitting ? "Updating..." : "Save Changes"}
           </button>
