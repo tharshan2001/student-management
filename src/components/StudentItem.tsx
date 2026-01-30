@@ -112,7 +112,10 @@ const StudentItem: React.FC<Props> = ({ student, onRefresh }) => {
         </td>
 
         <td className="py-4 px-6 text-right">
-          <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+          <div className="flex justify-end gap-1 
+              opacity-100 sm:opacity-0 
+              translate-x-0 sm:translate-x-2 
+              transition-all group-hover:opacity-100 group-hover:translate-x-0">
             <button
               onClick={handleEditClick}
               className="p-2.5 text-slate-400 hover:text-yellow-600 hover:bg-yellow-100 rounded-xl transition-colors"
