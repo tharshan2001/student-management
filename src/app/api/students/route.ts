@@ -57,8 +57,6 @@ export async function GET(req: NextRequest) {
 }
 
 
-
-
 //  POST – Create Student
 export async function POST(req: NextRequest) {
   try {

@@ -8,7 +8,7 @@ export interface Address {
 }
 
 export interface Student {
-  _id?: ObjectId;
+  _id?: string;
   studentCode: string;
   firstName: string;
   middleName?: string;
